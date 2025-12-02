@@ -1,0 +1,152 @@
+/* ============================================================
+    ESTILOS GENERALES
+============================================================ */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f1f5fb;
+}
+
+/* Contenedor general reutilizable */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+}
+
+/* Inputs globales */
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 18px;
+    border-radius: 6px;
+    border: 1px solid #ccd6e5;
+    background: #eef4ff;
+    font-size: 15px;
+}
+
+/* Botones globales */
+button, .btn {
+    background: #0055aa;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+}
+
+button:hover, .btn:hover {
+    background: #004388;
+}
+
+/* Enlaces tipo botón */
+.btn-link {
+    background: #0066cc;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-link:hover {
+    background: #004c99;
+}
+
+/* ============================================================
+    NAVBAR
+============================================================ */
+.navbar {
+    width: 100%;
+    background-color: #003366;
+    padding: 14px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;   /* SE MANTIENE ARRIBA */
+}
+
+
+.navbar .logo {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+.nav-links a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+    TABLAS
+============================================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table thead {
+    background: #003366;
+    color: white;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    text-align: left;
+}
+
+/* ============================================================
+    LOGIN CENTRADO
+============================================================ */
+.center-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-box {
+    width: 380px;
+    background: white;
+    padding: 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.09);
+    text-align: center;
+}
+
+.login-box h2 {
+    margin-bottom: 25px;
+    color: #003366;
+}
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* centra verticalmente */
+}

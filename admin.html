@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Administrador - Documentos</title>
+</head>
+<body>
+
+<h2>Panel Administrativo - Documentos Subidos</h2>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Usuario</th>
+      <th>Tipo</th>
+      <th>Estado</th>
+      <th>Observación</th>
+      <th>Fecha subida</th>
+      <th>Archivo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="tablaAdmin"></tbody>
+</table>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://kxscsimitzauzpgddoqq.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c2NzaW1pdHphdXpwZ2Rkb3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1OTUzMDksImV4cCI6MjA4MDE3MTMwOX0.zWm6WOujN3OsMGLbuu7DYqoN8O2cs0Ej5rVQeAMVay4";
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function cargarDocumentosAdmin() {
+  const tabla = document.getElementById("tablaAdmin");
+
+  const { data, error } = await supabase
+    .from("users_docs")
+    .select("*")
+    .order("id", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    tabla.innerHTML = `<tr><td colspan="8">Error al cargar documentos</td></tr>`;
+    return;
+  }
+
+  tabla.innerHTML = "";
+
+  data.forEach(doc => {
+    const fila = `
+      <tr>
+        <td>${doc.id}</td>
+        <td>${doc.user_id ?? "Sin ID"}</td>
+        <td>${doc.tipo}</td>
+        <td>${doc.estado}</td>
+        <td>${doc.observacion ?? "-"}</td>
+        <td>${doc.fecha_subida ? new Date(doc.fecha_subida).toLocaleString() : "-"}</td>
+        <td><a href="${doc.file_url}" target="_blank">Abrir</a></td>
+        <td>
+          <button onclick="aprobar(${doc.id})">Aprobar</button>
+          <button onclick="rechazar(${doc.id})">Rechazar</button>
+        </td>
+      </tr>
+    `;
+    tabla.innerHTML += fila;
+  });
+}
+
+cargarDocumentosAdmin();
+
+// --------------------------
+// Funciones del administrador
+// --------------------------
+
+async function aprobar(id) {
+  const { error } = await supabase
+    .from("users_docs")
+    .update({ estado: "aprobado", observacion: "-" })
+    .eq("id", id);
+
+  if (error) return alert("Error al aprobar");
+  alert("Documento aprobado");
+  cargarDocumentosAdmin();
+}
+
+async function rechazar(id) {
+  const motivo = prompt("Ingrese la observación o motivo del rechazo:");
+
+  if (!motivo) return alert("Debes escribir una observación");
+
+  const { error } = await supabase
+    .from("users_docs")
+    .update({ estado: "rechazado", observacion: motivo })
+    .eq("id", id);
+
+  if (error) return alert("Error al rechazar");
+  alert("Documento rechazado");
+  cargarDocumentosAdmin();
+}
+</script>
+
+</body>
+</html>

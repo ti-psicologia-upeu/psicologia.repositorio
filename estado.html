@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mis documentos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+<!-- NAVBAR (sin Administración) -->
+<div class="navbar">
+    <div class="logo">Sistema de Documentos</div>
+    <div class="nav-links">
+        <a href="upload.html">Subir</a>
+        <a href="estado.html">Mis documentos</a>
+        <a href="#" onclick="cerrarSesion()">Salir</a>
+    </div>
+</div>
+
+<!-- CONTENEDOR -->
+<div class="container">
+    <h2 style="margin-bottom: 15px;">Mis documentos</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Observación</th>
+                <th>Archivo</th>
+            </tr>
+        </thead>
+        <tbody id="tablaDocs">
+            <tr>
+                <td colspan="4" style="text-align:center;">Cargando...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://kxscsimitzauzpgddoqq.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c2NzaW1pdHphdXpwZ2Rkb3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1OTUzMDksImV4cCI6MjA4MDE3MTMwOX0.zWm6WOujN3OsMGLbuu7DYqoN8O2cs0Ej5rVQeAMVay4";
+
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function cargarDocumentos() {
+
+  const { data: authData } = await supabase.auth.getUser();
+  if (!authData.user) {
+    alert("No hay sesión activa. Inicia sesión.");
+    return;
+  }
+
+  const uid = authData.user.id;
+
+  const { data, error } = await supabase
+    .from("users_docs")
+    .select("*")
+    .eq("user_id", uid);
+
+  const tabla = document.getElementById("tablaDocs");
+  tabla.innerHTML = "";
+
+  if (error) {
+    tabla.innerHTML = "<tr><td colspan='4' style='text-align:center;color:red;'>Error al cargar documentos</td></tr>";
+    return;
+  }
+
+  if (data.length === 0) {
+    tabla.innerHTML = "<tr><td colspan='4' style='text-align:center;'>No tienes documentos subidos</td></tr>";
+    return;
+  }
+
+  data.forEach(doc => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${doc.tipo}</td>
+        <td>
+            <span style="padding:4px 10px;border-radius:6px;
+                background:${doc.estado === 'pendiente' ? '#ffecb3' : '#c8f7c5'};
+                color:${doc.estado === 'pendiente' ? '#b88600' : '#1b5e20'};
+                font-weight:600;">
+                ${doc.estado}
+            </span>
+        </td>
+        <td>${doc.observacion ?? "-"}</td>
+        <td><a class="btn-link" href="${doc.file_url}" target="_blank">Abrir</a></td>
+      </tr>
+    `;
+  });
+}
+
+cargarDocumentos();
+
+async function cerrarSesion() {
+  await supabase.auth.signOut();
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

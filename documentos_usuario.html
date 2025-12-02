@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentos del Usuario</title>
+</head>
+<body>
+
+<h2>Documentos del Usuario</h2>
+
+<div>
+  <strong>Usuario:</strong> <span id="usuarioID"></span>
+  <br><br>
+  <a href="usuarios.html">← Volver a Usuarios</a>
+</div>
+
+<br>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>Estado</th>
+      <th>Observación</th>
+      <th>Archivo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="tablaDocumentos"></tbody>
+</table>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://kxscsimitzauzpgddoqq.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c2NzaW1pdHphdXpwZ2Rkb3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1OTUzMDksImV4cCI6MjA4MDE3MTMwOX0.zWm6WOujN3OsMGLbuu7DYqoN8O2cs0Ej5rVQeAMVay4";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+// Obtener UID de la URL
+const params = new URLSearchParams(window.location.search);
+const uid = params.get("uid");
+document.getElementById("usuarioID").innerText = uid;
+
+async function cargarDocumentos() {
+  const tabla = document.getElementById("tablaDocumentos");
+
+  const { data, error } = await supabase
+    .from("users_docs")
+    .select("*")
+    .eq("user_id", uid);
+
+  if (error) {
+    tabla.innerHTML = "<tr><td colspan='5'>Error al cargar documentos</td></tr>";
+    return;
+  }
+
+  tabla.innerHTML = "";
+
+  data.forEach(doc => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${doc.tipo}</td>
+        <td>${doc.estado}</td>
+        <td>${doc.observacion ?? "-"}</td>
+        <td><a href="${doc.file_url}" target="_blank">Abrir</a></td>
+        <td>
+          <button onclick="aprobar(${doc.id})">Aprobar</button>
+          <button onclick="rechazar(${doc.id})">Rechazar</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+cargarDocumentos();
+
+async function aprobar(id) {
+  await supabase.from("users_docs")
+    .update({ estado: "aprobado", observacion: "-" })
+    .eq("id", id);
+  cargarDocumentos();
+}
+
+async function rechazar(id) {
+  const motivo = prompt("Motivo del rechazo:");
+  if (!motivo) return;
+  await supabase.from("users_docs")
+    .update({ estado: "rechazado", observacion: motivo })
+    .eq("id", id);
+  cargarDocumentos();
+}
+</script>
+
+</body>
+</html>

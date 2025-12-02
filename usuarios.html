@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Usuarios</title>
+</head>
+<body>
+
+<h2>Usuarios con documentos subidos</h2>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>ID Usuario</th>
+      <th>Ver documentos</th>
+    </tr>
+  </thead>
+  <tbody id="tablaUsuarios"></tbody>
+</table>
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseUrl = "https://kxscsimitzauzpgddoqq.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c2NzaW1pdHphdXpwZ2Rkb3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1OTUzMDksImV4cCI6MjA4MDE3MTMwOX0.zWm6WOujN3OsMGLbuu7DYqoN8O2cs0Ej5rVQeAMVay4";
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function cargarUsuarios() {
+  const tabla = document.getElementById("tablaUsuarios");
+
+  const { data, error } = await supabase
+    .from("users_docs")
+    .select("user_id")
+    .not("user_id", "is", null);
+
+  if (error) {
+    console.error(error);
+    tabla.innerHTML = "<tr><td colspan='2'>Error al cargar usuarios</td></tr>";
+    return;
+  }
+
+  // Obtener usuarios únicos
+  const usuariosUnicos = [...new Set(data.map(u => u.user_id))];
+
+  tabla.innerHTML = "";
+
+  usuariosUnicos.forEach(uid => {
+    tabla.innerHTML += `
+      <tr>
+        <td>${uid}</td>
+        <td><a href="documentos_usuario.html?uid=${uid}">Ver documentos</a></td>
+      </tr>
+    `;
+  });
+}
+
+cargarUsuarios();
+</script>
+
+</body>
+</html>

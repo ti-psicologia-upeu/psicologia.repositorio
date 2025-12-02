@@ -1,0 +1,115 @@
+/* === ESTILO GENERAL === */
+body {
+  background: #eef2f7;
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+}
+
+/* === TOPBAR === */
+.topbar {
+  background: #003366;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.topbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+}
+#logoutBtn {
+  background: #fff;
+  color: #003366;
+  font-weight: 600;
+}
+
+/* === CONTENEDOR PRINCIPAL === */
+.dashboard-container {
+  display: flex;
+  height: calc(100vh - 56px);
+}
+
+/* === SIDEBAR LATERAL === */
+.sidebar {
+  width: 250px;
+  background: #003366;
+  padding: 25px 15px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  border-top-right-radius: 10px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 25px;
+  letter-spacing: 1px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 12px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.sidebar ul li:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+.sidebar ul li.active {
+  background: #00509e;
+  font-weight: 600;
+}
+
+/* === CONTENIDO PRINCIPAL === */
+.content {
+  flex: 1;
+  padding: 30px 50px;
+  overflow-y: auto;
+}
+
+.content h3 {
+  color: #003366;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.section {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+/* Tabla generada dinámicamente */
+#tablaPersonales table,
+#tablaAcademicos table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#tablaPersonales td, #tablaPersonales th,
+#tablaAcademicos td, #tablaAcademicos th {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* === SCROLLBAR ESTÉTICO === */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
