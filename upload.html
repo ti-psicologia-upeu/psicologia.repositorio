@@ -1,53 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Subir documento</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<div class="navbar">
-    <div class="logo">Sistema de Documentos</div>
-    <div class="nav-links">
-        <a href="upload.html">Subir</a>
-        <a href="estado.html">Mis documentos</a>
-        <a href="#" onclick="cerrarSesion()">Salir</a>
-    </div>
-</div>
-
-<!-- PANEL DE SUBIDA -->
-<div class="container" style="max-width:600px;">
-    <h2 style="color:#003366; margin-bottom:20px;">Subir Documento</h2>
-
-    <label for="tipoDocumento">Tipo de documento</label>
-    <select id="tipoDocumento">
-        <option value="dni">DNI</option>
-        <option value="foto">Foto</option>
-        <option value="titulo">Título profesional</option>
-        <option value="pago">Constancia de pago</option>
-        <option value="otros">Otros documentos</option>
-    </select>
-
-    <label for="fileInput">Seleccionar archivo</label>
-    <input type="file" id="fileInput">
-
-    <button id="btnSubir" style="margin-top:5px;">Subir</button>
-</div>
-
-<!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 const supabaseUrl = "https://kxscsimitzauzpgddoqq.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt4c2NzaW1pdHphdXpwZ2Rkb3FxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ1OTUzMDksImV4cCI6MjA4MDE3MTMwOX0.zWm6WOujN3OsMGLbuu7DYqoN8O2cs0Ej5rVQeAMVay4";
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseKey = "sb_publishable_rVLHZNN_yKqtKXhapONxrA_waMS-Hf2";
+
+const supabaseClient = window.supabase.createClient(
+  supabaseUrl,
+  supabaseKey
+);
 
 document.getElementById("btnSubir").onclick = async function () {
 
-  const { data: authData } = await supabase.auth.getUser();
+  const { data: authData } = await supabaseClient.auth.getUser();
   if (!authData.user) return alert("Debes iniciar sesión.");
 
   const uid = authData.user.id;
@@ -58,17 +22,20 @@ document.getElementById("btnSubir").onclick = async function () {
 
   const nombre = `${uid}/${Date.now()}-${file.name}`;
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await supabaseClient.storage
     .from("documentos")
     .upload(nombre, file);
 
-  if (uploadError) return alert("Error al subir archivo");
+  if (uploadError) {
+    console.error(uploadError);
+    return alert("Error al subir archivo");
+  }
 
-  const { data: urlData } = supabase.storage
+  const { data: urlData } = supabaseClient.storage
     .from("documentos")
     .getPublicUrl(nombre);
 
-  await supabase.from("users_docs").insert({
+  await supabaseClient.from("users_docs").insert({
     user_id: uid,
     tipo,
     file_url: urlData.publicUrl,
@@ -80,10 +47,7 @@ document.getElementById("btnSubir").onclick = async function () {
 };
 
 async function cerrarSesion() {
-    await supabase.auth.signOut();
-    window.location.href = "index.html";
+  await supabaseClient.auth.signOut();
+  window.location.href = "index.html";
 }
 </script>
-
-</body>
-</html>
